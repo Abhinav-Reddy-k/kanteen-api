@@ -32,4 +32,29 @@ router.post("/", async (req, res) => {
   res.send(foodItem);
 });
 
+router.put("/:id", validateObjectId, async (req, res) => {
+  const { error } = validateFoodItem(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
+  const foodItem = await FoodItem.findByIdAndUpdate(
+    req.params.id,
+    {
+      name: req.body.name,
+      price: req.body.price,
+      availability: req.body.availability,
+      category: req.body.category,
+    },
+    { new: true }
+  );
+  if (!foodItem)
+    return res.status(404).send("The food item with give Id is not found");
+  res.send(foodItem);
+});
+
+router.delete("/:id", validateObjectId, async (req, res) => {
+  const foodItem = await FoodItem.findByIdAndDelete(req.params.id);
+  if (!foodItem)
+    return res.status(404).send("The food item with give Id is not found");
+  res.send(foodItem);
+});
+
 module.exports = router;
