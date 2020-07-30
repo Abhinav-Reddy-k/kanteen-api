@@ -1,4 +1,4 @@
-const Joi = require("joi");
+const Joi = require("@hapi/joi");
 const mongoose = require("mongoose");
 
 const foodItemSchema = new mongoose.Schema({
@@ -28,14 +28,14 @@ const foodItemSchema = new mongoose.Schema({
 const FoodItem = mongoose.model("FoodItem", foodItemSchema);
 
 function validateFoodItem(foodItem) {
-  const schema = {
-    name: Joi.string().required(),
+  const schema = Joi.object({
+    name: Joi.string().required().max(255).min(1),
     price: Joi.number().min(0).max(500).required(),
-    category: Joi.string().required(),
+    category: Joi.string().required().max(200).min(1),
     availability: Joi.boolean(),
-  };
+  });
 
-  return Joi.validate(foodItem, schema);
+  return schema.validate(foodItem);
 }
 
 exports.foodItemSchema = foodItemSchema;

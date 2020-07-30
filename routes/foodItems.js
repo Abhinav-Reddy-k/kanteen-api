@@ -43,7 +43,7 @@ router.put("/:id", validateObjectId, async (req, res) => {
       availability: req.body.availability,
       category: req.body.category,
     },
-    { new: true }
+    { new: true, useFindAndModify: true }
   );
   if (!foodItem)
     return res.status(404).send("The food item with give Id is not found");
@@ -51,7 +51,9 @@ router.put("/:id", validateObjectId, async (req, res) => {
 });
 
 router.delete("/:id", validateObjectId, async (req, res) => {
-  const foodItem = await FoodItem.findByIdAndDelete(req.params.id);
+  const foodItem = await FoodItem.findByIdAndDelete(req.params.id, {
+    useFindAndModify: true,
+  });
   if (!foodItem)
     return res.status(404).send("The food item with give Id is not found");
   res.send(foodItem);
