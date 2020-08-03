@@ -6,4 +6,4 @@
 
 ## Run `npm i` for downloading dependencies.
 
-## Run `node index.js` for starting the backend server.
+## Run `npm start` for starting the backend server.

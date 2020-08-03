@@ -15,6 +15,7 @@ const foodItemSchema = new mongoose.Schema({
   },
   category: {
     type: String,
+    enum: ["MilkShake", "Drinks", "Fried Rice"],
     required: true,
     minlength: 3,
     maxlength: 50,

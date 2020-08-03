@@ -1,15 +1,18 @@
 const express = require("express");
 const router = express.Router();
 const _ = require("lodash");
+const admin = require("../middleware/admin");
 const { FoodItem, validateFoodItem } = require("../models/foodItem");
 const validateObjectId = require("../middleware/validateObjectId");
 
-router.get("/", async (req, res) => {
+// Getting all food items in db (Requires authentication)
+router.get("/", auth, async (req, res) => {
   const foodItems = await FoodItem.find();
   res.send(foodItems);
 });
 
-router.get("/:id", validateObjectId, async (req, res) => {
+// Getting fooditem with specific id (Requires authentication)
+router.get("/:id", auth, validateObjectId, async (req, res) => {
   const foodItem = await FoodItem.findById(req.params.id).select("-__v");
 
   if (!foodItem)
@@ -20,7 +23,8 @@ router.get("/:id", validateObjectId, async (req, res) => {
   res.send(foodItem);
 });
 
-router.post("/", async (req, res) => {
+// Adding a new food item to db (Requires Admin privilages)
+router.post("/", auth, admin, async (req, res) => {
   const { error } = validateFoodItem(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
@@ -32,7 +36,8 @@ router.post("/", async (req, res) => {
   res.send(foodItem);
 });
 
-router.put("/:id", validateObjectId, async (req, res) => {
+// Updating a food item with specific id (Requires Admin privilages)
+router.put("/:id", validateObjectId, auth, admin, async (req, res) => {
   const { error } = validateFoodItem(req.body);
   if (error) return res.status(400).send(error.details[0].message);
   const foodItem = await FoodItem.findByIdAndUpdate(
@@ -50,7 +55,8 @@ router.put("/:id", validateObjectId, async (req, res) => {
   res.send(foodItem);
 });
 
-router.delete("/:id", validateObjectId, async (req, res) => {
+// Deleting a specific food item (Requires Admin privilages)
+router.delete("/:id", validateObjectId, auth, admin, async (req, res) => {
   const foodItem = await FoodItem.findByIdAndDelete(req.params.id, {
     useFindAndModify: true,
   });

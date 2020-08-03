@@ -5,10 +5,14 @@ const { User, validateUser } = require("../models/user");
 const express = require("express");
 const router = express.Router();
 
+// For getting the logged in user details
+
 router.get("/me", auth, async (req, res) => {
   const user = await User.findById(req.user._id).select("-password");
   res.send(user);
 });
+
+// For registering new User
 
 router.post("/", async (req, res) => {
   const { error } = validateUser(req.body);
@@ -16,7 +20,7 @@ router.post("/", async (req, res) => {
 
   let user = await User.findOne({ email: req.body.email });
   if (user) return res.status(400).send("User already registered.");
-  const newUserParams = ["name", "email", "password", "phone"];
+  const newUserParams = ["name", "email", "password"];
   if (req.body.phone) newUserParams.push("phone");
   user = new User(_.pick(req.body, newUserParams));
   const salt = await bcrypt.genSalt(10);
