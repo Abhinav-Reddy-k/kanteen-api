@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const _ = require("lodash");
 const admin = require("../middleware/admin");
+const auth = require("../middleware/auth");
 const { FoodItem, validateFoodItem } = require("../models/foodItem");
 const validateObjectId = require("../middleware/validateObjectId");
 
