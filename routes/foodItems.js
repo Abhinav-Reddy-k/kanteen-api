@@ -30,7 +30,7 @@ router.post("/", auth, admin, async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   let foodItem = new FoodItem(
-    _.pick(req.body, ["name", "price", "category", "availability"])
+    _.pick(req.body, ["name", "url", "price", "category", "availability"])
   );
   foodItem = await foodItem.save();
 
@@ -45,6 +45,7 @@ router.put("/:id", validateObjectId, auth, admin, async (req, res) => {
     req.params.id,
     {
       name: req.body.name,
+      url: req.body.url,
       price: req.body.price,
       availability: req.body.availability,
       category: req.body.category,
