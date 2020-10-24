@@ -45,7 +45,24 @@ router.post("/cart", auth, async (req, res) => {
     },
     { new: true }
   );
-  console.log(user.cart);
+  // console.log(user.cart);
   res.send(user.cart);
 });
+
+router.post("/removecart", auth, async (req, res) => {
+  let { cartFoodId, userId } = req.body;
+  console.log(cartFoodId);
+  let user = await User.findByIdAndUpdate(
+    userId,
+    {
+      $pull: {
+        cart: cartFoodId,
+      },
+    },
+    { new: true }
+  );
+  // console.log(user.cart);
+  res.send(user.cart);
+});
+
 module.exports = router;
