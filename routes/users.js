@@ -7,8 +7,8 @@ const router = express.Router();
 
 // For getting the logged in user details
 
-router.get("/me", auth, async (req, res) => {
-  const user = await User.findById(req.user._id).select("-password");
+router.post("/me", auth, async (req, res) => {
+  const user = await User.findById(req.body._id).select("-password");
   res.send(user);
 });
 
@@ -33,4 +33,19 @@ router.post("/", async (req, res) => {
     .send(_.pick(user, ["_id", "name", "email"]));
 });
 
+router.post("/cart", auth, async (req, res) => {
+  let { cartFoodId, userId } = req.body;
+  console.log(cartFoodId);
+  let user = await User.findByIdAndUpdate(
+    userId,
+    {
+      $push: {
+        cart: cartFoodId,
+      },
+    },
+    { new: true }
+  );
+  console.log(user.cart);
+  res.send(user.cart);
+});
 module.exports = router;

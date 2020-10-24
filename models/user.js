@@ -28,6 +28,9 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 5,
   },
+  cart: {
+    type: [String],
+  },
   isAdmin: {
     type: Boolean,
     default: false,
