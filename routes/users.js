@@ -33,21 +33,42 @@ router.post("/", async (req, res) => {
     .send(_.pick(user, ["_id", "name", "email"]));
 });
 
+//  storing users cart details
+
 router.post("/cart", auth, async (req, res) => {
-  let { cartFoodId, userId } = req.body;
-  console.log(cartFoodId);
-  let user = await User.findByIdAndUpdate(
+  let { cartFoodId, userId, quantity } = req.body;
+  const result = await User.findByIdAndUpdate(
     userId,
     {
       $push: {
-        cart: cartFoodId,
+        cart: {
+          item: cartFoodId,
+          quantity: quantity,
+        },
       },
     },
-    { new: true }
+    {
+      new: true,
+    }
   );
-  // console.log(user.cart);
-  res.send(user.cart);
+  console.log(result);
+  res.send(result);
 });
+
+// setting cart item quantity
+
+router.post("/setQuantity", auth, async (req, res) => {
+  let { cartFoodId, userId, quantity } = req.body;
+  const item = await User.updateOne(
+    { _id: userId, "cart.item": cartFoodId },
+    { $set: { "cart.$.quantity": quantity } }
+  );
+
+  console.log(item);
+  res.send(item);
+});
+
+// Removing cart item
 
 router.post("/removecart", auth, async (req, res) => {
   let { cartFoodId, userId } = req.body;
@@ -56,7 +77,7 @@ router.post("/removecart", auth, async (req, res) => {
     userId,
     {
       $pull: {
-        cart: cartFoodId,
+        cart: { item: cartFoodId },
       },
     },
     { new: true }
