@@ -9,7 +9,7 @@ module.exports = function (req, res, next) {
 
   try {
     const decoded = jwt.verify(token, config.get("jwtPrivateKey"));
-    res.locals.decoded = decoded;
+    req.isAdmin = decoded.isAdmin;
     next();
   } catch (ex) {
     res.status(400).send("Invalid token.");

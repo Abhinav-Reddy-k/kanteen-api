@@ -52,7 +52,7 @@ router.post("/cart", auth, async (req, res) => {
     }
   );
   console.log(result);
-  res.send(result);
+  res.send(result.cart);
 });
 
 // setting cart item quantity
@@ -65,7 +65,7 @@ router.post("/setQuantity", auth, async (req, res) => {
   );
 
   console.log(item);
-  res.send(item);
+  res.send({quantity,cartFoodId});
 });
 
 // Removing cart item
