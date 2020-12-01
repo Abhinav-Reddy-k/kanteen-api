@@ -10,6 +10,9 @@ const foodItemSchema = new mongoose.Schema({
   url: {
     type: String,
   },
+  url2: {
+    type: String,
+  },
   price: {
     type: Number,
     required: true,
@@ -35,6 +38,7 @@ function validateFoodItem(foodItem) {
   const schema = Joi.object({
     name: Joi.string().required().max(255).min(1),
     url: Joi.string(),
+    url2:Joi.string(),
     price: Joi.number().min(0).max(500).required(),
     category: Joi.string().required().max(200).min(1),
     availability: Joi.boolean(),

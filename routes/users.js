@@ -49,6 +49,7 @@ router.post("/cart", auth, async (req, res) => {
     },
     {
       new: true,
+      useFindAndModify: false
     }
   );
   console.log(result);
@@ -65,7 +66,7 @@ router.post("/setQuantity", auth, async (req, res) => {
   );
 
   console.log(item);
-  res.send({quantity,cartFoodId});
+  res.send({ quantity, cartFoodId });
 });
 
 // Removing cart item
@@ -80,9 +81,22 @@ router.post("/removecart", auth, async (req, res) => {
         cart: { item: cartFoodId },
       },
     },
-    { new: true }
+    { new: true, useFindAndModify: false }
   );
   // console.log(user.cart);
+  res.send(user.cart);
+});
+
+
+router.post("/emptycart", auth, async (req, res) => {
+  let { userId } = req.body;
+  let user = await User.findByIdAndUpdate(
+    userId,
+    {
+      cart : []
+    },
+    { new: true, useFindAndModify: false }
+  );
   res.send(user.cart);
 });
 

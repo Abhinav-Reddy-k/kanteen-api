@@ -30,7 +30,7 @@ router.post("/", auth, admin, async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   let foodItem = new FoodItem(
-    _.pick(req.body, ["name", "url", "price", "category", "availability"])
+    _.pick(req.body, ["name", "url","url2", "price", "category", "availability"])
   );
   foodItem = await foodItem.save();
 
@@ -46,11 +46,12 @@ router.put("/:id", validateObjectId, auth, admin, async (req, res) => {
     {
       name: req.body.name,
       url: req.body.url,
+      url2: req.body.url2,
       price: req.body.price,
       availability: req.body.availability,
       category: req.body.category,
     },
-    { new: true, useFindAndModify: true }
+    { new: true, useFindAndModify: false }
   );
   if (!foodItem)
     return res.status(404).send("The food item with give Id is not found");
