@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const _ = require("lodash");
 const { User, validateUser } = require("../models/user");
 const express = require("express");
+const admin = require("../middleware/admin");
 const router = express.Router();
 
 // For getting the logged in user details
@@ -49,7 +50,7 @@ router.post("/cart", auth, async (req, res) => {
     },
     {
       new: true,
-      useFindAndModify: false
+      useFindAndModify: false,
     }
   );
   console.log(result);
@@ -87,13 +88,23 @@ router.post("/removecart", auth, async (req, res) => {
   res.send(user.cart);
 });
 
+// removing a cart item from all users / used when admin deletes a foodItem
+router.post("/removeDeletedItem", auth, admin, async (req, res) => {
+  let { cartFoodId } = req.body;
+  let result = await User.updateMany(
+    {},
+    { $pull: { cart: { item: cartFoodId } } }
+  );
+  console.log(result);
+  res.send(result);
+});
 
 router.post("/emptycart", auth, async (req, res) => {
   let { userId } = req.body;
   let user = await User.findByIdAndUpdate(
     userId,
     {
-      cart : []
+      cart: [],
     },
     { new: true, useFindAndModify: false }
   );
