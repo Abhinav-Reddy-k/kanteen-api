@@ -21,9 +21,7 @@ router.post("/", async (req, res) => {
 
   let user = await User.findOne({ email: req.body.email });
   if (user) return res.status(400).send("User already registered.");
-  const newUserParams = ["name", "email", "password"];
-  if (req.body.phone) newUserParams.push("phone");
-  user = new User(_.pick(req.body, newUserParams));
+  user = new User(req.body);
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
   await user.save();
@@ -99,6 +97,7 @@ router.post("/removeDeletedItem", auth, admin, async (req, res) => {
   res.send(result);
 });
 
+// removing all cart items of a user
 router.post("/emptycart", auth, async (req, res) => {
   let { userId } = req.body;
   let user = await User.findByIdAndUpdate(
