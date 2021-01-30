@@ -32,6 +32,62 @@ router.post("/", async (req, res) => {
     .send(_.pick(user, ["_id", "name", "email"]));
 });
 
+router.post("/get_user_wishlist", auth, async (req, res) => {
+  const user = await User.findById(req.body._id).select("-password");
+  res.send(user.wishlist);
+});
+
+router.post("/get_user_cart", auth, async (req, res) => {
+  const user = await User.findById(req.body._id).select("-password");
+  res.send(user.cart);
+});
+
+//  adding an item to wishlist
+router.post("/wishlist", auth, async (req, res) => {
+  let { itemId, userId } = req.body;
+  let user = await User.findByIdAndUpdate(
+    userId,
+    {
+      $push: {
+        wishlist: itemId,
+      },
+    },
+    {
+      new: true,
+      useFindAndModify: false,
+    }
+  );
+  res.send(user.wishlist);
+});
+
+// removing an item from wishlist
+router.post("/remove_wishlist", auth, async (req, res) => {
+  let { itemId, userId } = req.body;
+  let user = await User.findByIdAndUpdate(
+    userId,
+    {
+      $pull: {
+        wishlist: itemId,
+      },
+    },
+    { new: true, useFindAndModify: false }
+  );
+  res.send(user.wishlist);
+});
+
+// removing all wishlist items of a user
+router.post("/empty_wishlist", auth, async (req, res) => {
+  let { userId } = req.body;
+  let user = await User.findByIdAndUpdate(
+    userId,
+    {
+      wishlist: [],
+    },
+    { new: true, useFindAndModify: false }
+  );
+  res.send(user.wishlist);
+});
+
 //  storing users cart details
 
 router.post("/cart", auth, async (req, res) => {
@@ -51,7 +107,6 @@ router.post("/cart", auth, async (req, res) => {
       useFindAndModify: false,
     }
   );
-  console.log(result);
   res.send(result.cart);
 });
 
@@ -64,7 +119,6 @@ router.post("/setQuantity", auth, async (req, res) => {
     { $set: { "cart.$.quantity": quantity } }
   );
 
-  console.log(item);
   res.send({ quantity, cartFoodId });
 });
 
@@ -82,18 +136,16 @@ router.post("/removecart", auth, async (req, res) => {
     },
     { new: true, useFindAndModify: false }
   );
-  // console.log(user.cart);
   res.send(user.cart);
 });
 
-// removing a cart item from all users / used when admin deletes a foodItem
+// removing a cart & wishlist item from all users / used when admin deletes a foodItem
 router.post("/removeDeletedItem", auth, admin, async (req, res) => {
   let { cartFoodId } = req.body;
   let result = await User.updateMany(
     {},
-    { $pull: { cart: { item: cartFoodId } } }
+    { $pull: { cart: { item: cartFoodId }, wishlist: cartFoodId } }
   );
-  console.log(result);
   res.send(result);
 });
 

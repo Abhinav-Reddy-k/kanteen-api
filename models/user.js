@@ -37,6 +37,7 @@ const userSchema = new mongoose.Schema({
       },
     },
   ],
+  wishlist: [String],
   isAdmin: {
     type: Boolean,
     default: false,
