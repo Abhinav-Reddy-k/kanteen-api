@@ -1,6 +1,6 @@
 {
   "jwtPrivateKey": "unsecureKey",
   "db": "mongodb://localhost/Kanteen",
-  "port": "3000",
+  "port": "4000",
   "requiresAuth": false
 }

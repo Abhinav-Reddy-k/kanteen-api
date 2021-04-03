@@ -1,3 +1,4 @@
 {
-  "jwtPrivateKey": "Kanteen_jwtPrivateKey"
+  "jwtPrivateKey": "Kanteen_jwtPrivateKey",
+  "db":"mongodb://mongodb/Kanteen"
 }

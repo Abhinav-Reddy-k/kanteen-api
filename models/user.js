@@ -1,9 +1,8 @@
-const { Mongoose } = require("mongoose");
 const Joi = require("@hapi/joi");
 const jwt = require("jsonwebtoken");
 const config = require("config");
-
 const mongoose = require("mongoose");
+const { FoodItem } = require("./foodItem");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -30,19 +29,21 @@ const userSchema = new mongoose.Schema({
   },
   cart: [
     {
-      item: String,
+      item: mongoose.Schema.Types.ObjectId,
       quantity: {
         type: Number,
         default: 1,
       },
     },
   ],
-  wishlist: [String],
+  wishlist: [mongoose.Schema.Types.ObjectId],
   isAdmin: {
     type: Boolean,
     default: false,
   },
 });
+
+userSchema.path("cart.item").ref(FoodItem);
 
 userSchema.methods.generateAuthToken = function () {
   const token = jwt.sign(
