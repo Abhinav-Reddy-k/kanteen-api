@@ -5,11 +5,13 @@ const { User, validateUser } = require("../models/user");
 const express = require("express");
 const admin = require("../middleware/admin");
 const router = express.Router();
+const debug = require("debug")("app:users");
 
 // For getting the logged in user details
 
 router.post("/me", auth, async (req, res) => {
   const user = await User.findById(req.body._id).select("-password");
+  debug(user);
   res.send(user);
 });
 
@@ -57,6 +59,7 @@ router.post("/wishlist", auth, async (req, res) => {
       useFindAndModify: false,
     }
   );
+  debug(user.wishlist);
   res.send(user.wishlist);
 });
 
@@ -72,6 +75,7 @@ router.post("/remove_wishlist", auth, async (req, res) => {
     },
     { new: true, useFindAndModify: false }
   );
+  debug(user.wishlist);
   res.send(user.wishlist);
 });
 
@@ -85,6 +89,7 @@ router.post("/empty_wishlist", auth, async (req, res) => {
     },
     { new: true, useFindAndModify: false }
   );
+  debug(user.wishlist);
   res.send(user.wishlist);
 });
 
@@ -107,6 +112,7 @@ router.post("/cart", auth, async (req, res) => {
       useFindAndModify: false,
     }
   );
+  debug(result.cart);
   res.send(result.cart);
 });
 
@@ -118,7 +124,7 @@ router.post("/setQuantity", auth, async (req, res) => {
     { _id: userId, "cart.item": cartFoodId },
     { $set: { "cart.$.quantity": quantity } }
   );
-
+  debug({ quantity, cartFoodId });
   res.send({ quantity, cartFoodId });
 });
 
@@ -136,6 +142,7 @@ router.post("/removecart", auth, async (req, res) => {
     },
     { new: true, useFindAndModify: false }
   );
+  debug(user.cart);
   res.send(user.cart);
 });
 
@@ -146,6 +153,7 @@ router.post("/removeDeletedItem", auth, admin, async (req, res) => {
     {},
     { $pull: { cart: { item: cartFoodId }, wishlist: cartFoodId } }
   );
+  debug(result);
   res.send(result);
 });
 
@@ -159,6 +167,7 @@ router.post("/emptycart", auth, async (req, res) => {
     },
     { new: true, useFindAndModify: false }
   );
+  debug(user.cart);
   res.send(user.cart);
 });
 

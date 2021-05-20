@@ -1,4 +1,5 @@
 {
-  "jwtPrivateKey": "Kanteen_jwtPrivateKey",
-  "db":"mongodb://mongodb/Kanteen"
+  "jwtPrivateKey": "jwt",
+  "db":"docker_db",
+  "debug":"DEBUG"
 }
