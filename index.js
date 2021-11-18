@@ -7,7 +7,7 @@ require("./startup/prod")(app);
 require("./startup/routes")(app);
 require("./startup/db")();
 
-const port = config.get("port");
+const port = process.env.PORT || config.get("port");
 const server = app.listen(port, () =>
   logger.info(`Listening on port ${port}...`)
 );
