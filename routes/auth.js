@@ -4,7 +4,7 @@ const _ = require("lodash");
 const { User } = require("../models/user");
 const express = require("express");
 const router = express.Router();
-
+const debug = require("debug")("app:auth");
 // For logging in the user
 
 router.post("/", async (req, res) => {
@@ -18,6 +18,7 @@ router.post("/", async (req, res) => {
   if (!validPassword) return res.status(400).send("Invalid email or password.");
 
   const token = user.generateAuthToken();
+  debug(`login token ${token}`);
   res.send(token);
 });
 
